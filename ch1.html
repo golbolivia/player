@@ -1,0 +1,39 @@
+<html>
+<head>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@clappr/player@latest/dist/clappr.min.js"></script>
+
+<style type="text/css">
+    body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+    #player {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+</style>
+
+
+</head>
+<body>
+<div id="player"></div>
+<script>
+        var player = new Clappr.Player({
+        source: "https://mcdn.mrgamingstreams.com/fs1.m3u8",
+        parentId: "#player",
+        poster: 'https://cdn.clarosports.com/clarosports/2024/04/mtyintermiami-175824-1024x576.jpg',
+        width: '100%',
+        height: '100%',
+        autoPlay: false
+    });
+</script>
+</body>
+</html>
