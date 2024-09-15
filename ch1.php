@@ -38,7 +38,7 @@
                               disableVideoTagContextMenu: false,
                           });
                       } else if (playerType === "twitchalt2") {
-                          container.innerHTML = '<iframe id="twitchPlayer" src="https://mcdn.mrgamingstreams.com/foxd.m3u8" frameborder="0" allow="autoplay" allowfullscreen="true" width="100%"></iframe>';
+                          container.innerHTML = '<iframe id="twitchPlayer" src="https://customer-6omirmepqgfd2l3d.cloudflarestream.com/5a18d97853f63dd49affd81ffcf34a2e/manifest/video.m3u8" frameborder="0" allow="autoplay" allowfullscreen="true" width="100%"></iframe>';
                       }
                       
                       
@@ -46,7 +46,7 @@
                   
                   // Automatically load the Clappr player on page load
                   window.onload = function() {
-                      showPlayer('clappr', 'https://mcdn.mrgamingstreams.com/star.m3u8'); // Default stream
+                      showPlayer('clappr', 'https://customer-6omirmepqgfd2l3d.cloudflarestream.com/5a18d97853f63dd49affd81ffcf34a2e/manifest/video.m3u8'); // Default stream
                   };
                </script>
             </div>
