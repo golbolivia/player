@@ -19,7 +19,7 @@
             position: relative;
             width: 100%;
             max-width: 100%;
-            padding-top: 56.25%;
+            padding-top: 56.25%; /* Mantener relación de aspecto 16:9 */
         }
 
         #player {
@@ -39,6 +39,7 @@
             background: url('https://d10xsoss226fg9.cloudfront.net/5Sd1MnfA80X5idhqrOnT6vs8wR2ebedj/B05C552148D643158A8AD703B26331CC/il/dbc8bbe6cee8426c987103b0dc0d3346/play-1696001250042.png') no-repeat center center;
             background-size: cover;
             z-index: 10;
+            cursor: pointer; /* Aparece como un botón */
         }
 
         .unauthorized-message {
@@ -50,7 +51,7 @@
 </head>
 <body>
     <div id="player-wrapper">
-        <div id="poster-overlay"></div>
+        <div id="poster-overlay" onclick="playVideo()"></div> <!-- Hacer clic para iniciar video -->
         <div id="player"></div>
     </div>
     <div class="unauthorized-message" id="unauthorized-message" style="display:none;">Acceso no autorizado.</div>
@@ -58,6 +59,7 @@
     <script>
         var allowedDomain = "golbolivia.com";
         var referrer = document.referrer;
+        var player;
 
         if (!referrer.includes(allowedDomain)) {
             document.getElementById('unauthorized-message').style.display = 'block';
@@ -66,17 +68,21 @@
                 window.location.href = 'https://golbolivia.com';
             }, 0000);
         } else {
-            var player = new Clappr.Player({
+            // Inicializar el reproductor sin autoPlay
+            player = new Clappr.Player({
                 source: "https://customer-6omirmepqgfd2l3d.cloudflarestream.com/f2b912ecf055ab1ff8a7788741efdf12/manifest/video.m3u8",
                 parentId: "#player",
                 width: '100%',
                 height: '100%',
-                autoPlay: false
+                autoPlay: false,
+                mute: true
             });
+        }
 
-            player.on(Clappr.Events.PLAYER_PLAY, function() {
-                document.getElementById('poster-overlay').style.display = 'none';
-            });
+        // Función para ocultar el póster y reproducir el video
+        function playVideo() {
+            document.getElementById('poster-overlay').style.display = 'none'; // Ocultar el póster
+            player.play(); // Reproducir el video
         }
     </script>
 </body>
