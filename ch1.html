@@ -37,14 +37,15 @@
 <div class="unauthorized-message" id="unauthorized-message" style="display:none;">Acceso no autorizado.</div>
 
 <script>
-    var isAuthorized = false;
+    var allowedDomain = "https://golbolivia.com";
+    var referrer = document.referrer;
 
-    if (!isAuthorized) {
+    if (referrer.indexOf(allowedDomain) === -1) {
         document.getElementById('unauthorized-message').style.display = 'block';
         
         setTimeout(function() {
             window.location.href = 'https://golbolivia.com';
-        }, 0000); 
+        }, 0000);
     } else {
         var player = new Clappr.Player({
             source: "https://customer-6omirmepqgfd2l3d.cloudflarestream.com/5a18d97853f63dd49affd81ffcf34a2e/manifest/video.m3u8",
