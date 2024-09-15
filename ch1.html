@@ -10,6 +10,10 @@
         width: 100%;
         height: 100%;
         overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
     }
 
     #player {
@@ -19,20 +23,38 @@
         width: 100%;
         height: 100%;
     }
-</style>
 
+    .unauthorized-message {
+        font-size: 24px;
+        color: red;
+        text-align: center;
+    }
+</style>
 
 </head>
 <body>
 <div id="player"></div>
+<div class="unauthorized-message" id="unauthorized-message" style="display:none;">Acceso no autorizado.</div>
+
 <script>
+    var isAuthorized = false;
+
+    if (!isAuthorized) {
+        document.getElementById('unauthorized-message').style.display = 'block';
+        
+        setTimeout(function() {
+            window.location.href = 'https://golbolivia.com';
+        }, 0000); 
+    } else {
         var player = new Clappr.Player({
-        source: "https://customer-6omirmepqgfd2l3d.cloudflarestream.com/5a18d97853f63dd49affd81ffcf34a2e/manifest/video.m3u8",
-        parentId: "#player",
-        width: '100%',
-        height: '100%',
-        autoPlay: false
-    });
+            source: "https://customer-6omirmepqgfd2l3d.cloudflarestream.com/5a18d97853f63dd49affd81ffcf34a2e/manifest/video.m3u8",
+            parentId: "#player",
+            width: '100%',
+            height: '100%',
+            autoPlay: false
+        });
+    }
 </script>
+
 </body>
 </html>
