@@ -1,63 +1,71 @@
-<!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso</title>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@clappr/player@latest/dist/clappr.min.js"></script>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@clappr/player@latest/dist/clappr.min.js"></script>
+
+<style type="text/css">
+    body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: Arial, sans-serif;
+    }
+
+    #player-wrapper {
+        position: relative;
+        width: 100%;
+        max-width: 100%;
+        padding-top: 56.25%;
+    }
+
+    #player {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .unauthorized-message {
+        font-size: 24px;
+        color: red;
+        text-align: center;
+    }
+</style>
+
 </head>
 <body>
-    <script type="text/javascript">
-        // Define el dominio autorizado
-        var allowedDomain = "golbolivia.com";  // El dominio autorizado
+<div id="player-wrapper">
+    <div id="player"></div>
+</div>
+<div class="unauthorized-message" id="unauthorized-message" style="display:none;">Acceso no autorizado.</div>
 
-        // Verifica el dominio de referencia
-        var referrer = document.referrer;
+<script>
+    var allowedDomain = "golbolivia.com";
 
-        // Si el dominio de referencia NO es el autorizado
-        if (!referrer.includes(allowedDomain)) {
-            // Cambia el contenido del body para mostrar solo el mensaje de acceso no autorizado
-            document.body.innerHTML = '<div style="display: flex; justify-content: center; align-items: center; height: 100vh;"><h1 style="color: red;">Acceso no autorizado. Serás redirigido...</h1></div>';
-            
-            // Redirige después de 3 segundos
-            setTimeout(function() {
-                window.location.href = 'https://golbolivia.com';  // Redirige al sitio autorizado
-            }, 3000);
-        } else {
-            // Si el dominio está autorizado, genera dinámicamente el reproductor
-            document.body.innerHTML = `
-                <style>
-                    body, html {
-                        margin: 0;
-                        padding: 0;
-                        width: 100%;
-                        height: 100%;
-                        overflow: hidden;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        font-family: Arial, sans-serif;
-                    }
-                    #player {
-                        position: absolute;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                    }
-                </style>
-                <div id="player"></div>
-            `;
+    var referrer = document.referrer;
 
-            // Carga del reproductor Clappr
-            var player = new Clappr.Player({
-                source: "https://customer-6omirmepqgfd2l3d.cloudflarestream.com/5a18d97853f63dd49affd81ffcf34a2e/manifest/video.m3u8",
-                parentId: "#player",
-                width: '100%',
-                height: '100%',
-                autoPlay: false
-            });
-        }
-    </script>
+    if (!referrer.includes(allowedDomain)) {
+        document.getElementById('unauthorized-message').style.display = 'block';
+        
+        setTimeout(function() {
+            window.location.href = 'https://golbolivia.com';
+        }, 0000);
+    } else {
+        var player = new Clappr.Player({
+            source: "https://customer-6omirmepqgfd2l3d.cloudflarestream.com/5a18d97853f63dd49affd81ffcf34a2e/manifest/video.m3u8",
+            parentId: "#player",
+            width: '100%',
+            height: '100%',
+            autoPlay: false
+        });
+    }
+</script>
+
 </body>
 </html>
