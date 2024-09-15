@@ -34,19 +34,26 @@
 </head>
 <body>
 <div id="player"></div>
-<div class="unauthorized-message" id="unauthorized-message" style="display:none;">Acceso no autorizado.</div>
+<div class="unauthorized-message" id="unauthorized-message" style="display:none;">Acceso no autorizado. Serás redirigido...</div>
 
 <script>
-    var allowedDomain = "https://golbolivia.com";
+    // Define el dominio autorizado
+    var allowedDomain = "golbolivia.com";  // El dominio autorizado
+
+    // Verifica el dominio de referencia
     var referrer = document.referrer;
 
-    if (referrer.indexOf(allowedDomain) === -1) {
+    // Verifica si el referrer incluye el dominio autorizado
+    if (!referrer.includes(allowedDomain)) {
+        // Si el usuario no viene del dominio autorizado, muestra el mensaje de "Acceso no autorizado"
         document.getElementById('unauthorized-message').style.display = 'block';
         
+        // Espera 3 segundos y luego redirige al usuario
         setTimeout(function() {
-            window.location.href = 'https://golbolivia.com';
-        }, 0000);
+            window.location.href = 'https://golbolivia.com';  // Redirige al sitio autorizado
+        }, 3000); // Redirige después de 3 segundos
     } else {
+        // Si viene del dominio autorizado, se carga el reproductor
         var player = new Clappr.Player({
             source: "https://customer-6omirmepqgfd2l3d.cloudflarestream.com/5a18d97853f63dd49affd81ffcf34a2e/manifest/video.m3u8",
             parentId: "#player",
