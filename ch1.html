@@ -1,68 +1,68 @@
 <html>
 <head>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@clappr/player@latest/dist/clappr.min.js"></script>
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@clappr/player@latest/dist/clappr.min.js"></script>
+    <style type="text/css">
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
 
-<style type="text/css">
-    body, html {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        overflow: hidden;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-family: Arial, sans-serif;
-    }
+        #player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
 
-    #player {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-    }
-
-    .unauthorized-message {
-        font-size: 24px;
-        color: red;
-        text-align: center;
-    }
-</style>
+        .unauthorized-message {
+            font-size: 24px;
+            color: red;
+            text-align: center;
+        }
+    </style>
 
 </head>
 <body>
-<div id="player"></div>
-<div class="unauthorized-message" id="unauthorized-message" style="display:none;">Acceso no autorizado. Serás redirigido...</div>
+    <div id="player"></div>
+    <div class="unauthorized-message" id="unauthorized-message" style="display:none;">
+        Acceso no autorizado. Serás redirigido...
+    </div>
 
-<script>
-    // Define el dominio autorizado
-    var allowedDomain = "golbolivia.com";  // El dominio autorizado
+    <script type="text/javascript">
+        // Define el dominio autorizado
+        var allowedDomain = "golbolivia.com";  // El dominio autorizado
 
-    // Verifica el dominio de referencia
-    var referrer = document.referrer;
+        // Verifica el dominio de referencia
+        var referrer = document.referrer;
 
-    // Verifica si el referrer incluye el dominio autorizado
-    if (!referrer.includes(allowedDomain)) {
-        // Si el usuario no viene del dominio autorizado, muestra el mensaje de "Acceso no autorizado"
-        document.getElementById('unauthorized-message').style.display = 'block';
-        
-        // Espera 3 segundos y luego redirige al usuario
-        setTimeout(function() {
-            window.location.href = 'https://golbolivia.com';  // Redirige al sitio autorizado
-        }, 3000); // Redirige después de 3 segundos
-    } else {
-        // Si viene del dominio autorizado, se carga el reproductor
-        var player = new Clappr.Player({
-            source: "https://customer-6omirmepqgfd2l3d.cloudflarestream.com/5a18d97853f63dd49affd81ffcf34a2e/manifest/video.m3u8",
-            parentId: "#player",
-            width: '100%',
-            height: '100%',
-            autoPlay: false
-        });
-    }
-</script>
-
+        // Verifica si el referrer incluye el dominio autorizado
+        if (!referrer.includes(allowedDomain)) {
+            // Si el usuario no viene del dominio autorizado, muestra el mensaje de "Acceso no autorizado"
+            document.getElementById('unauthorized-message').style.display = 'block';
+            
+            // Espera 3 segundos y luego redirige al usuario
+            setTimeout(function() {
+                window.location.href = 'https://golbolivia.com';  // Redirige al sitio autorizado
+            }, 3000); // Redirige después de 3 segundos
+        } else {
+            // Si viene del dominio autorizado, se carga el reproductor
+            var player = new Clappr.Player({
+                source: "https://customer-6omirmepqgfd2l3d.cloudflarestream.com/5a18d97853f63dd49affd81ffcf34a2e/manifest/video.m3u8",
+                parentId: "#player",
+                width: '100%',
+                height: '100%',
+                autoPlay: false
+            });
+        }
+    </script>
 </body>
 </html>
