@@ -42,21 +42,12 @@
             color: red;
             text-align: center;
         }
-        /* Opcional: Estilo para el control de volumen */
-        #volume-control {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            z-index: 20;
-        }
     </style>
 </head>
 <body>
     <div id="player-wrapper">
         <div id="poster-overlay" onclick="playVideo()"></div>
         <div id="player"></div>
-        <!-- Control de volumen opcional -->
-        <input id="volume-control" type="range" min="0" max="1" step="0.05" value="1" onchange="setVolume(this.value)" />
     </div>
     <div class="unauthorized-message" id="unauthorized-message" style="display:none;">Acceso no autorizado.</div>
 
@@ -69,7 +60,7 @@
             document.getElementById('unauthorized-message').style.display = 'block';
             setTimeout(function() {
                 window.location.href = 'https://golbolivia.com';
-            }, 0000);
+            }, 0);
         } else {
             // Inicializar el reproductor sin autoPlay y con sonido activado
             player = new Clappr.Player({
@@ -78,7 +69,7 @@
                 width: '100%',
                 height: '100%',
                 autoPlay: false,
-                mute: false  // Sonido activado
+                mute: false // Sonido activado
             });
         }
 
@@ -86,12 +77,6 @@
         function playVideo() {
             document.getElementById('poster-overlay').style.display = 'none';
             player.play();
-        }
-
-        // Función para ajustar el volumen
-        function setVolume(value) {
-            // Clappr utiliza la API del reproductor para ajustar el volumen
-            player.setVolume(parseFloat(value));
         }
     </script>
 </body>
