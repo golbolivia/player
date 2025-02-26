@@ -1,7 +1,6 @@
 <html>
 <head>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@clappr/player@latest/dist/clappr.min.js"></script>
-
     <style type="text/css">
         body, html {
             margin: 0;
@@ -14,14 +13,12 @@
             align-items: center;
             font-family: Arial, sans-serif;
         }
-
         #player-wrapper {
             position: relative;
             width: 100%;
             max-width: 100%;
             padding-top: 56.25%; /* Mantener relación de aspecto 16:9 */
         }
-
         #player {
             position: absolute;
             top: 0;
@@ -29,7 +26,6 @@
             width: 100%;
             height: 100%;
         }
-
         #poster-overlay {
             position: absolute;
             top: 0;
@@ -39,20 +35,28 @@
             background: url('https://d10xsoss226fg9.cloudfront.net/5Sd1MnfA80X5idhqrOnT6vs8wR2ebedj/B05C552148D643158A8AD703B26331CC/il/dbc8bbe6cee8426c987103b0dc0d3346/play-1696001250042.png') no-repeat center center;
             background-size: cover;
             z-index: 10;
-            cursor: pointer; /* Aparece como un botón */
+            cursor: pointer;
         }
-
         .unauthorized-message {
             font-size: 24px;
             color: red;
             text-align: center;
         }
+        /* Opcional: Estilo para el control de volumen */
+        #volume-control {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            z-index: 20;
+        }
     </style>
 </head>
 <body>
     <div id="player-wrapper">
-        <div id="poster-overlay" onclick="playVideo()"></div> <!-- Hacer clic para iniciar video -->
+        <div id="poster-overlay" onclick="playVideo()"></div>
         <div id="player"></div>
+        <!-- Control de volumen opcional -->
+        <input id="volume-control" type="range" min="0" max="1" step="0.05" value="1" onchange="setVolume(this.value)" />
     </div>
     <div class="unauthorized-message" id="unauthorized-message" style="display:none;">Acceso no autorizado.</div>
 
@@ -63,26 +67,31 @@
 
         if (!referrer.includes(allowedDomain)) {
             document.getElementById('unauthorized-message').style.display = 'block';
-            
             setTimeout(function() {
                 window.location.href = 'https://golbolivia.com';
             }, 0000);
         } else {
-            // Inicializar el reproductor sin autoPlay
+            // Inicializar el reproductor sin autoPlay y con sonido activado
             player = new Clappr.Player({
                 source: "https://customer-vr9rjksib1s69joh.cloudflarestream.com/744e02bdecde4b8991b5ce3910ebf5e5/manifest/video.m3u8",
                 parentId: "#player",
                 width: '100%',
                 height: '100%',
                 autoPlay: false,
-                mute: true
+                mute: false  // Sonido activado
             });
         }
 
         // Función para ocultar el póster y reproducir el video
         function playVideo() {
-            document.getElementById('poster-overlay').style.display = 'none'; // Ocultar el póster
-            player.play(); // Reproducir el video
+            document.getElementById('poster-overlay').style.display = 'none';
+            player.play();
+        }
+
+        // Función para ajustar el volumen
+        function setVolume(value) {
+            // Clappr utiliza la API del reproductor para ajustar el volumen
+            player.setVolume(parseFloat(value));
         }
     </script>
 </body>
