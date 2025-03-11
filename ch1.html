@@ -62,14 +62,15 @@
                 window.location.href = 'https://golbolivia.com';
             }, 0);
         } else {
-            // Inicializar el reproductor sin autoPlay y con sonido activado
+            // Inicializar el reproductor sin autoPlay, con sonido activado y en loop
             player = new Clappr.Player({
                 source: "https://customer-vr9rjksib1s69joh.cloudflarestream.com/bfd0d5ba4bfcb0e9d9c8c35221c36409/manifest/video.m3u8",
                 parentId: "#player",
                 width: '100%',
                 height: '100%',
                 autoPlay: false,
-                mute: false // Sonido activado
+                mute: false, // Sonido activado
+                loop: true   // Activar loop
             });
         }
 
