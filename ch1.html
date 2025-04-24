@@ -1,83 +1,100 @@
-<html>
+<!DOCTYPE html>
+<html lang="es">
 <head>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@clappr/player@latest/dist/clappr.min.js"></script>
-    <style type="text/css">
-        body, html {
+    <meta charset="UTF-8">
+    <title>Clappr Player Mejorado</title>
+    <script src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/clappr-fullscreen-plugin@latest/dist/clappr-fullscreen-plugin.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        html, body {
             margin: 0;
             padding: 0;
-            width: 100%;
             height: 100%;
-            overflow: hidden;
+            background: #000;
+            font-family: 'Arial', sans-serif;
             display: flex;
-            justify-content: center;
             align-items: center;
-            font-family: Arial, sans-serif;
+            justify-content: center;
         }
         #player-wrapper {
-            position: relative;
             width: 100%;
             max-width: 100%;
-            padding-top: 56.25%; /* Mantener relación de aspecto 16:9 */
-        }
-        #player {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            aspect-ratio: 16/9;
+            position: relative;
         }
         #poster-overlay {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             background: url('https://d10xsoss226fg9.cloudfront.net/5Sd1MnfA80X5idhqrOnT6vs8wR2ebedj/B05C552148D643158A8AD703B26331CC/il/dbc8bbe6cee8426c987103b0dc0d3346/play-1696001250042.png') no-repeat center center;
             background-size: cover;
-            z-index: 10;
             cursor: pointer;
+            z-index: 999;
         }
-        .unauthorized-message {
-            font-size: 24px;
+        #unauthorized-message {
             color: red;
+            font-size: 22px;
             text-align: center;
+            margin-top: 20px;
+            display: none;
         }
     </style>
 </head>
 <body>
+
     <div id="player-wrapper">
         <div id="poster-overlay" onclick="playVideo()"></div>
         <div id="player"></div>
     </div>
-    <div class="unauthorized-message" id="unauthorized-message" style="display:none;">Acceso no autorizado.</div>
+    <div id="unauthorized-message">Acceso no autorizado.</div>
 
     <script>
-        var allowedDomain = "golbolivia.com";
-        var referrer = document.referrer;
-        var player;
+        const allowedDomain = "golbolivia.com";
+        const referrer = document.referrer;
+        const videoSource = "https://customer-4ouu9izmq01at8oc.cloudflarestream.com/a09e701d6c4611e29a55187e44fbc00b/manifest/video.m3u8";
 
-        if (!referrer.includes(allowedDomain)) {
-            document.getElementById('unauthorized-message').style.display = 'block';
-            setTimeout(function() {
-                window.location.href = 'https://golbolivia.com';
-            }, 0);
-        } else {
-            // Inicializar el reproductor sin autoPlay y con sonido activado
+        let player = null;
+
+        function initPlayer() {
             player = new Clappr.Player({
-                source: "https://customer-4ouu9izmq01at8oc.cloudflarestream.com/a09e701d6c4611e29a55187e44fbc00b/manifest/video.m3u8",
+                source: videoSource,
                 parentId: "#player",
-                width: '100%',
-                height: '100%',
+                width: "100%",
+                height: "100%",
                 autoPlay: false,
-                mute: false // Sonido activado
+                mute: false,
+                plugins: [Clappr.FullscreenPlugin],
+                fullscreenEnabled: true,
+                mediacontrol: { seekbar: "#00adee", buttons: "#ffffff" },
+                poster: "", // puedes poner una imagen aquí si deseas
+                playback: {
+                    hlsUseNextLevel: true,
+                    hlsEnableWorker: true,
+                    crossOrigin: 'anonymous'
+                }
             });
         }
 
-        // Función para ocultar el póster y reproducir el video
         function playVideo() {
             document.getElementById('poster-overlay').style.display = 'none';
+            if (!player) {
+                initPlayer();
+            }
             player.play();
         }
+
+        // Control de dominio permitido
+        if (!referrer.includes(allowedDomain)) {
+            document.getElementById('unauthorized-message').style.display = 'block';
+            setTimeout(() => {
+                window.location.href = 'https://golbolivia.com';
+            }, 1000);
+        } else {
+            // Cargar player solo si el dominio está permitido
+            initPlayer();
+        }
     </script>
+
 </body>
 </html>
