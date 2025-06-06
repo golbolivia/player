@@ -1,15 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <meta charset="utf-8">
-  <title>Reproductor Stream con Play/Stop controlado</title>
+  <meta charset="UTF-8">
+  <title>Player con póster y recarga de stream</title>
   <script src="https://cdn.jsdelivr.net/npm/@clappr/player@latest/dist/clappr.min.js"></script>
   <style>
     html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
       background: #000;
+      height: 100%;
+      width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -18,7 +19,11 @@
       position: relative;
       width: 100%;
       max-width: 800px;
-      aspect-ratio: 16/9;
+      aspect-ratio: 16 / 9;
+    }
+    #player {
+      width: 100%;
+      height: 100%;
       background: #000;
     }
     #poster-overlay {
@@ -27,73 +32,42 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhJnNXt4a1ywW4V6AdrWrKc4vzvHtnbyp4KBpVo5dg1Oe9ciR8bVlkd_21ZlclrYmAwVFv6zIMyAgUw98nxzeR5rbrpRs89e89tA5zTsw_vgo36ZOjTsZGUsnu1LPCDO3EeEM61PcRcZKbJtswa-5XRLO-FBETS1Bbff5EMlcIF-xe6OrVlWwD6gym21S-P/s1600/play.png') no-repeat center center;
-      background-size: 80px 80px;
-      background-color: rgba(0, 0, 0, 0.5);
+      background: rgba(0,0,0,0.7) url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhJnNXt4a1ywW4V6AdrWrKc4vzvHtnbyp4KBpVo5dg1Oe9ciR8bVlkd_21ZlclrYmAwVFv6zIMyAgUw98nxzeR5rbrpRs89e89tA5zTsw_vgo36ZOjTsZGUsnu1LPCDO3EeEM61PcRcZKbJtswa-5XRLO-FBETS1Bbff5EMlcIF-xe6OrVlWwD6gym21S-P/s1600/play.png') no-repeat center center;
+      background-size: 80px;
       cursor: pointer;
       z-index: 10;
-    }
-    #player {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      z-index: 1;
-    }
-    .unauthorized-message {
-      color: red;
-      font-size: 20px;
-      text-align: center;
-      margin-top: 20px;
     }
   </style>
 </head>
 <body>
   <div id="player-wrapper">
-    <div id="poster-overlay" onclick="startStream()"></div>
+    <div id="poster-overlay" onclick="iniciarPlayer()"></div>
     <div id="player"></div>
-  </div>
-  <div class="unauthorized-message" id="unauthorized-message" style="display:none;">
-    Acceso no autorizado.
   </div>
 
   <script>
-    const allowedDomain = "golbolivia.com";
-    const referrer = document.referrer || "";
     const STREAM_URL = "https://customer-noiyn2ur5mvy908j.cloudflarestream.com/514879fcb7854bf99a883a4c6ac08314/manifest/video.m3u8";
-
     let player = null;
-    let streamStarted = false;
+    let primeraVez = true;
 
-    if (!referrer.includes(allowedDomain)) {
-      document.getElementById('unauthorized-message').style.display = 'block';
-      setTimeout(() => {
-        window.location.href = "https://golbolivia.com";
-      }, 2000);
-    }
+    function iniciarPlayer() {
+      document.getElementById("poster-overlay").style.display = "none";
 
-    function startStream() {
-      if (player === null) {
-        // Ocultar póster
-        document.getElementById('poster-overlay').style.display = 'none';
+      player = new Clappr.Player({
+        source: STREAM_URL,
+        parentId: "#player",
+        autoPlay: true,
+        mute: false,
+        width: "100%",
+        height: "100%"
+      });
 
-        // Crear el player y reproducir
-        player = new Clappr.Player({
-          source: STREAM_URL,
-          parentId: '#player',
-          autoPlay: true,
-          mute: false,
-          width: '100%',
-          height: '100%'
-        });
-
-        // Recargar el stream si el usuario presiona Play después de Stop
-        player.on(Clappr.Events.PLAYER_PLAY, () => {
-          if (streamStarted) {
-            player.load(STREAM_URL); // Recarga si ya había empezado antes
-          }
-          streamStarted = true;
-        });
-      }
+      player.on(Clappr.Events.PLAYER_PLAY, () => {
+        if (!primeraVez) {
+          player.load(STREAM_URL); // recargar stream
+        }
+        primeraVez = false;
+      });
     }
   </script>
 </body>
