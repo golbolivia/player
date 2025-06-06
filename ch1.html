@@ -1,146 +1,100 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>Clappr – Cargar stream al hacer Play</title>
-    <script src="https://cdn.jsdelivr.net/npm/@clappr/player@latest/dist/clappr.min.js"></script>
-    <style>
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: Arial, sans-serif;
-        }
-        #player-wrapper {
-            position: relative;
-            width: 100%;
-            max-width: 800px;       /* Ajusta según lo que desees */
-            padding-top: 56.25%;    /* 16:9 */
-            cursor: pointer;        /* Muestra que es clickeable */
-        }
-        #player {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-        #poster-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhJnNXt4a1ywW4V6AdrWrKc4vzvHtnbyp4KBpVo5dg1Oe9ciR8bVlkd_21ZlclrYmAwVFv6zIMyAgUw98nxzeR5rbrpRs89e89tA5zTsw_vgo36ZOjTsZGUsnu1LPCDO3EeEM61PcRcZKbJtswa-5XRLO-FBETS1Bbff5EMlcIF-xe6OrVlWwD6gym21S-P/s1600/play.png') no-repeat center center;
-            background-size: contain;
-            z-index: 10;
-        }
-        .unauthorized-message {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 1rem;
-            background-color: rgba(0,0,0,0.8);
-            font-size: 24px;
-            color: red;
-            text-align: center;
-        }
-    </style>
+  <meta charset="utf-8">
+  <title>Reproductor con recarga al Play</title>
+  <script src="https://cdn.jsdelivr.net/npm/@clappr/player@latest/dist/clappr.min.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #player-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 800px;
+      aspect-ratio: 16/9;
+      background: #000;
+    }
+    #poster-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhJnNXt4a1ywW4V6AdrWrKc4vzvHtnbyp4KBpVo5dg1Oe9ciR8bVlkd_21ZlclrYmAwVFv6zIMyAgUw98nxzeR5rbrpRs89e89tA5zTsw_vgo36ZOjTsZGUsnu1LPCDO3EeEM61PcRcZKbJtswa-5XRLO-FBETS1Bbff5EMlcIF-xe6OrVlWwD6gym21S-P/s1600/play.png') no-repeat center center;
+      background-size: contain;
+      cursor: pointer;
+      z-index: 10;
+    }
+    #player {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      z-index: 1;
+    }
+    .unauthorized-message {
+      color: red;
+      font-size: 20px;
+      text-align: center;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-    <!-- Contenedor del jugador y póster -->
-    <div id="player-wrapper">
-        <div id="poster-overlay"></div>
-        <div id="player"></div>
-    </div>
+  <div id="player-wrapper">
+    <div id="poster-overlay" onclick="startStream()"></div>
+    <div id="player"></div>
+  </div>
+  <div class="unauthorized-message" id="unauthorized-message" style="display:none;">
+    Acceso no autorizado.
+  </div>
 
-    <!-- Mensaje de acceso no autorizado -->
-    <div class="unauthorized-message" id="unauthorized-message" style="display:none;">
-        Acceso no autorizado.
-    </div>
+  <script>
+    const allowedDomain = "golbolivia.com";
+    const referrer = document.referrer || "";
+    const STREAM_URL = "https://customer-noiyn2ur5mvy908j.cloudflarestream.com/514879fcb7854bf99a883a4c6ac08314/manifest/video.m3u8";
 
-    <script>
-        // ==========================
-        // 1) CONFIGURACIÓN BÁSICA
-        // ==========================
-        var allowedDomain = "golbolivia.com";
-        var referrer = document.referrer || "";
+    let player = null;
+    let isFirstStart = true;
 
-        // URL del stream que queremos reproducir
-        var STREAM_URL = "https://customer-noiyn2ur5mvy908j.cloudflarestream.com/514879fcb7854bf99a883a4c6ac08314/manifest/video.m3u8";
+    // Validación del dominio de origen
+    if (!referrer.includes(allowedDomain)) {
+      document.getElementById('unauthorized-message').style.display = 'block';
+      setTimeout(() => {
+        window.location.href = "https://golbolivia.com";
+      }, 2000);
+    }
 
-        // Instancia de Clappr.Player (la creamos VACÍA, sin source)
-        var player = null;
+    function startStream() {
+      if (!player) {
+        // Ocultar el póster
+        document.getElementById('poster-overlay').style.display = 'none';
 
-        // Bandera que indica si ya hemos cargado el stream al menos una vez
-        var isStarted = false;
+        // Crear el player
+        player = new Clappr.Player({
+          source: STREAM_URL,
+          parentId: '#player',
+          width: '100%',
+          height: '100%',
+          autoPlay: true,
+          mute: false
+        });
 
-
-        // ==========================
-        // 2) VALIDAR REFERER
-        // ==========================
-        if (!referrer.includes(allowedDomain)) {
-            // Si no es válido, mostramos mensaje y redirigimos
-            document.getElementById('unauthorized-message').style.display = 'block';
-            setTimeout(function() {
-                window.location.href = 'https://golbolivia.com';
-            }, 0);
-        } else {
-            // Si es válido, registramos el listener de clic en el wrapper
-            document
-              .getElementById('player-wrapper')
-              .addEventListener('click', onPosterClick);
-        }
-
-
-        // ======================================================
-        // 3) Función que atiende el primer clic (sobre el póster)
-        // ======================================================
-        function onPosterClick(event) {
-            // Si el clic ocurre dentro de los controles (clase .media-control), NO hacemos nada aquí
-            if (event.target.closest('.media-control')) {
-                return;
-            }
-
-            // SOLO si todavía no hemos iniciado (isStarted === false) => ocultamos póster y cargamos video
-            if (!isStarted) {
-                // Ocultar el póster
-                document.getElementById('poster-overlay').style.display = 'none';
-
-                // Crear la instancia de Clappr sin source
-                player = new Clappr.Player({
-                    parentId: "#player",
-                    width: '100%',
-                    height: '100%',
-                    autoPlay: false,
-                    mute: false
-                });
-
-                // Cuando el usuario presione Play (en controles), cargamos o recargamos el stream
-                player.on(Clappr.Events.PLAYER_PLAY, function() {
-                    // Si aún no hemos cargado nunca, o si ya se había pausado, recargamos la fuente:
-                    player.load(STREAM_URL);
-                });
-
-                // Cuando el usuario presione Pause (Stop), Clappr solo pausará; no recargamos nada
-                player.on(Clappr.Events.PLAYER_PAUSE, function() {
-                    // No hacemos nada más: Clappr pausa el video y listo
-                });
-
-                // Ahora marcamos que ya hemos iniciado al menos una vez
-                isStarted = true;
-
-                // Finalmente, disparamos el PLAY programáticamente (esto disparará el callback PLAYER_PLAY)
-                player.play();
-            }
-        }
-    </script>
+        // Detectar cuando el usuario presiona Play (después de un Stop o Pause)
+        player.on(Clappr.Events.PLAYER_PLAY, () => {
+          if (!isFirstStart) {
+            player.load(STREAM_URL); // Recarga el stream si no es la primera vez
+          }
+          isFirstStart = false;
+        });
+      }
+    }
+  </script>
 </body>
 </html>
