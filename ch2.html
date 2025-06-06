@@ -1,4 +1,4 @@
-<html>
+<html> 
 <head>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@clappr/player@latest/dist/clappr.min.js"></script>
     <style type="text/css">
@@ -12,14 +12,12 @@
             justify-content: center;
             align-items: center;
             font-family: Arial, sans-serif;
-            background-color: #000;
         }
         #player-wrapper {
             position: relative;
             width: 100%;
             max-width: 100%;
             padding-top: 56.25%; /* Mantener relación de aspecto 16:9 */
-            cursor: pointer; /* Para indicar que es clickeable */
         }
         #player {
             position: absolute;
@@ -27,7 +25,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1;
         }
         #poster-overlay {
             position: absolute;
@@ -38,6 +35,7 @@
             background: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhJnNXt4a1ywW4V6AdrWrKc4vzvHtnbyp4KBpVo5dg1Oe9ciR8bVlkd_21ZlclrYmAwVFv6zIMyAgUw98nxzeR5rbrpRs89e89tA5zTsw_vgo36ZOjTsZGUsnu1LPCDO3EeEM61PcRcZKbJtswa-5XRLO-FBETS1Bbff5EMlcIF-xe6OrVlWwD6gym21S-P/s1600/play.png') no-repeat center center;
             background-size: cover;
             z-index: 10;
+            cursor: pointer;
         }
         .unauthorized-message {
             font-size: 24px;
@@ -47,67 +45,38 @@
     </style>
 </head>
 <body>
-    <div id="player-wrapper" onclick="handlePlayerClick()">
-        <!-- El póster se mostrará hasta que el usuario haga clic -->
-        <div id="poster-overlay"></div>
-        <!-- Aquí se inyectará el player de Clappr -->
+    <div id="player-wrapper">
+        <div id="poster-overlay" onclick="playVideo()"></div>
         <div id="player"></div>
     </div>
-    <div class="unauthorized-message" id="unauthorized-message" style="display:none;">
-        Acceso no autorizado.
-    </div>
+    <div class="unauthorized-message" id="unauthorized-message" style="display:none;">Acceso no autorizado.</div>
 
     <script>
-        // Dominio permitido para referer
         var allowedDomain = "golbolivia.com";
         var referrer = document.referrer;
-        // Instancia del player (inicialmente null)
-        var player = null;
-        // URL del stream que queremos cargar/reload
-        var STREAM_URL = "https://customer-noiyn2ur5mvy908j.cloudflarestream.com/8c88e13c5d97545389c95c7424e81602/manifest/video.m3u8";
-        // Bandera para saber si ya hemos ocultado el póster la primera vez
-        var firstClick = true;
+        var player;
 
-        // Si el referer NO incluye el dominio permitido, mostramos mensaje de error
         if (!referrer.includes(allowedDomain)) {
             document.getElementById('unauthorized-message').style.display = 'block';
             setTimeout(function() {
                 window.location.href = 'https://golbolivia.com';
             }, 0);
+        } else {
+            // Inicializar el reproductor sin autoPlay y con sonido activado
+            player = new Clappr.Player({
+                source: "https://customer-noiyn2ur5mvy908j.cloudflarestream.com/514879fcb7854bf99a883a4c6ac08314/manifest/video.m3u8",
+                parentId: "#player",
+                width: '100%',
+                height: '100%',
+                autoPlay: false,
+                mute: false // Sonido activado
+            });
         }
 
-        /**
-         * Esta función se ejecuta cada vez que el usuario hace clic
-         * sobre #player-wrapper (en el póster o dentro del player).
-         * La primera vez creamos el player y lo reproducimos.
-         * Las siguientes veces, recargamos (load) la misma URL y la reproducimos de nuevo.
-         */
-        function handlePlayerClick() {
-            // Si el referer no es válido, no hacemos nada
-            if (!referrer.includes(allowedDomain)) return;
-
-            // Ocultamos el póster en el primer clic
-            if (firstClick) {
-                document.getElementById('poster-overlay').style.display = 'none';
-                firstClick = false;
-            }
-
-            // Si el player aún no existe, lo inicializamos
-            if (!player) {
-                player = new Clappr.Player({
-                    source: STREAM_URL,
-                    parentId: "#player",
-                    width: '100%',
-                    height: '100%',
-                    autoPlay: true, // Iniciar reproducción automáticamente
-                    mute: false      // Sonido activado
-                });
-            } else {
-                // Si ya existe el player, recargamos (load) la misma URL
-                player.load(STREAM_URL);
-                // Nos aseguramos de que empiece a reproducir
-                player.play();
-            }
+        // Función para ocultar el póster y reproducir el video
+        function playVideo() {
+            document.getElementById('poster-overlay').style.display = 'none';
+            player.play();
         }
     </script>
 </body>
