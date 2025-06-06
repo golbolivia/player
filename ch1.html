@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Reproductor con recarga al Play</title>
+  <title>Reproductor Stream con Play/Stop controlado</title>
   <script src="https://cdn.jsdelivr.net/npm/@clappr/player@latest/dist/clappr.min.js"></script>
   <style>
     html, body {
@@ -28,7 +28,8 @@
       width: 100%;
       height: 100%;
       background: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhJnNXt4a1ywW4V6AdrWrKc4vzvHtnbyp4KBpVo5dg1Oe9ciR8bVlkd_21ZlclrYmAwVFv6zIMyAgUw98nxzeR5rbrpRs89e89tA5zTsw_vgo36ZOjTsZGUsnu1LPCDO3EeEM61PcRcZKbJtswa-5XRLO-FBETS1Bbff5EMlcIF-xe6OrVlWwD6gym21S-P/s1600/play.png') no-repeat center center;
-      background-size: contain;
+      background-size: 80px 80px;
+      background-color: rgba(0, 0, 0, 0.5);
       cursor: pointer;
       z-index: 10;
     }
@@ -61,9 +62,8 @@
     const STREAM_URL = "https://customer-noiyn2ur5mvy908j.cloudflarestream.com/514879fcb7854bf99a883a4c6ac08314/manifest/video.m3u8";
 
     let player = null;
-    let isFirstStart = true;
+    let streamStarted = false;
 
-    // Validación del dominio de origen
     if (!referrer.includes(allowedDomain)) {
       document.getElementById('unauthorized-message').style.display = 'block';
       setTimeout(() => {
@@ -72,26 +72,26 @@
     }
 
     function startStream() {
-      if (!player) {
-        // Ocultar el póster
+      if (player === null) {
+        // Ocultar póster
         document.getElementById('poster-overlay').style.display = 'none';
 
-        // Crear el player
+        // Crear el player y reproducir
         player = new Clappr.Player({
           source: STREAM_URL,
           parentId: '#player',
-          width: '100%',
-          height: '100%',
           autoPlay: true,
-          mute: false
+          mute: false,
+          width: '100%',
+          height: '100%'
         });
 
-        // Detectar cuando el usuario presiona Play (después de un Stop o Pause)
+        // Recargar el stream si el usuario presiona Play después de Stop
         player.on(Clappr.Events.PLAYER_PLAY, () => {
-          if (!isFirstStart) {
-            player.load(STREAM_URL); // Recarga el stream si no es la primera vez
+          if (streamStarted) {
+            player.load(STREAM_URL); // Recarga si ya había empezado antes
           }
-          isFirstStart = false;
+          streamStarted = true;
         });
       }
     }
