@@ -1,74 +1,83 @@
-<!DOCTYPE html>
-<html lang="es">
+<html> 
 <head>
-  <meta charset="UTF-8">
-  <title>Player con póster y recarga de stream</title>
-  <script src="https://cdn.jsdelivr.net/npm/@clappr/player@latest/dist/clappr.min.js"></script>
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: #000;
-      height: 100%;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    #player-wrapper {
-      position: relative;
-      width: 100%;
-      max-width: 800px;
-      aspect-ratio: 16 / 9;
-    }
-    #player {
-      width: 100%;
-      height: 100%;
-      background: #000;
-    }
-    #poster-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.7) url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhJnNXt4a1ywW4V6AdrWrKc4vzvHtnbyp4KBpVo5dg1Oe9ciR8bVlkd_21ZlclrYmAwVFv6zIMyAgUw98nxzeR5rbrpRs89e89tA5zTsw_vgo36ZOjTsZGUsnu1LPCDO3EeEM61PcRcZKbJtswa-5XRLO-FBETS1Bbff5EMlcIF-xe6OrVlWwD6gym21S-P/s1600/play.png') no-repeat center center;
-      background-size: 80px;
-      cursor: pointer;
-      z-index: 10;
-    }
-  </style>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@clappr/player@latest/dist/clappr.min.js"></script>
+    <style type="text/css">
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+        }
+        #player-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            padding-top: 56.25%; /* Mantener relación de aspecto 16:9 */
+        }
+        #player {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #poster-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhJnNXt4a1ywW4V6AdrWrKc4vzvHtnbyp4KBpVo5dg1Oe9ciR8bVlkd_21ZlclrYmAwVFv6zIMyAgUw98nxzeR5rbrpRs89e89tA5zTsw_vgo36ZOjTsZGUsnu1LPCDO3EeEM61PcRcZKbJtswa-5XRLO-FBETS1Bbff5EMlcIF-xe6OrVlWwD6gym21S-P/s1600/play.png') no-repeat center center;
+            background-size: cover;
+            z-index: 10;
+            cursor: pointer;
+        }
+        .unauthorized-message {
+            font-size: 24px;
+            color: red;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-  <div id="player-wrapper">
-    <div id="poster-overlay" onclick="iniciarPlayer()"></div>
-    <div id="player"></div>
-  </div>
+    <div id="player-wrapper">
+        <div id="poster-overlay" onclick="playVideo()"></div>
+        <div id="player"></div>
+    </div>
+    <div class="unauthorized-message" id="unauthorized-message" style="display:none;">Acceso no autorizado.</div>
 
-  <script>
-    const STREAM_URL = "https://customer-noiyn2ur5mvy908j.cloudflarestream.com/514879fcb7854bf99a883a4c6ac08314/manifest/video.m3u8";
-    let player = null;
-    let primeraVez = true;
+    <script>
+        var allowedDomain = "golbolivia.com";
+        var referrer = document.referrer;
+        var player;
 
-    function iniciarPlayer() {
-      document.getElementById("poster-overlay").style.display = "none";
-
-      player = new Clappr.Player({
-        source: STREAM_URL,
-        parentId: "#player",
-        autoPlay: true,
-        mute: false,
-        width: "100%",
-        height: "100%"
-      });
-
-      player.on(Clappr.Events.PLAYER_PLAY, () => {
-        if (!primeraVez) {
-          player.load(STREAM_URL); // recargar stream
+        if (!referrer.includes(allowedDomain)) {
+            document.getElementById('unauthorized-message').style.display = 'block';
+            setTimeout(function() {
+                window.location.href = 'https://golbolivia.com';
+            }, 0);
+        } else {
+            // Inicializar el reproductor sin autoPlay y con sonido activado
+            player = new Clappr.Player({
+                source: "https://customer-noiyn2ur5mvy908j.cloudflarestream.com/514879fcb7854bf99a883a4c6ac08314/manifest/video.m3u8",
+                parentId: "#player",
+                width: '100%',
+                height: '100%',
+                autoPlay: false,
+                mute: false // Sonido activado
+            });
         }
-        primeraVez = false;
-      });
-    }
-  </script>
+
+        // Función para ocultar el póster y reproducir el video
+        function playVideo() {
+            document.getElementById('poster-overlay').style.display = 'none';
+            player.play();
+        }
+    </script>
 </body>
 </html>
