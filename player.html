@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Reproductor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background: #000;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const url = params.get("url");
+
+    if (url) {
+      document.write(`<iframe src="${decodeURIComponent(url)}" allowfullscreen></iframe>`);
+    } else {
+      document.body.innerHTML = "<h2 style='color:white;text-align:center;margin-top:50px;'>URL no válida</h2>";
+    }
+  </script>
+</body>
+</html>
