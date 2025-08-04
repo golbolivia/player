@@ -50,18 +50,6 @@
         <div id="player"></div>
     </div>
     <div class="unauthorized-message" id="unauthorized-message" style="display:none;">Acceso no autorizado.</div>
-
-    <script>
-        var allowedDomain = "golbolivia.com";
-        var referrer = document.referrer;
-        var player;
-
-        if (!referrer.includes(allowedDomain)) {
-            document.getElementById('unauthorized-message').style.display = 'block';
-            setTimeout(function() {
-                window.location.href = 'https://golbolivia.com';
-            }, 0);
-        } else {
             // Inicializar el reproductor sin autoPlay y con sonido activado
             player = new Clappr.Player({
                 source: "https://customer-qew8bl6kl8w2skt1.cloudflarestream.com/a7c0c0b9a294a70a3e328b82754633c7/manifest/video.m3u8",
